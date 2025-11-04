@@ -2,16 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using proyecto_nicol.Data;
+using proyecto_nicol.Implementacion;
+using proyecto_nicol.Services;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration
 .GetConnectionString("DefaultConnection");
-
+    
 
 // Add services to the container.
 builder.Services.AddControllersWithViews() ;
 builder.Services.AddDbContext<DBContext>(Options =>
  Options.UseNpgsql(connectionString)
 );
+builder.Services.AddScoped<IUsuariosService, UsuarioService>();
 
 var app = builder.Build();
 
