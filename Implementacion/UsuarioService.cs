@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using proyecto_nicol.Data;
 using proyecto_nicol.Models;
 using proyecto_nicol.Services;
@@ -10,23 +11,24 @@ namespace proyecto_nicol.Implementacion
 {
     public class UsuarioService : IUsuariosService
     {
-        public void CrearUsuario(USUARIOMODEMN usuario)
+        
+        public async Task CrearUsuario(USUARIOMODEMN usuario)
         {
-            throw new NotImplementedException();
-        }
-        private readonly DBContext dBContext;
-        public UsuarioService(DBContext dBContext)
-        {
-            this.dBContext = dBContext;
-        }
-        public async void CrearUsuarioAsync(USUARIOMODEMN usuario)
-        {
+
+            if (usuario != null)
             {
-                if (usuario != null)
-                    dBContext.Usuarios.Add(usuario);
+                usuario.Usuario_Contrasena = passwordServicio.HashPassword(usuario.Usuario_Contrasena);
+                dBContext.Usuarios.Add(usuario);
                 await dBContext.SaveChangesAsync();
             }
+        }
+        private readonly DBContext dBContext;
+        private readonly IPasswordServicio passwordServicio;
+        public UsuarioService(DBContext dBContext, IPasswordServicio passwordServicio)
 
+        {
+            this.dBContext = dBContext;
+            this.passwordServicio = passwordServicio;
         }
     }
 }

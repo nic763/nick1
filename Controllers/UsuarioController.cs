@@ -11,7 +11,7 @@ using proyecto_nicol.Services;
 
 namespace proyecto_nicol.Controllers
 {
-    [Route("/user")]
+    [Route("user")]
     public class UsuarioController : Controller
     {
         private readonly IUsuariosService usuariosService;
@@ -23,19 +23,25 @@ namespace proyecto_nicol.Controllers
 
         [HttpPost]
         [Route("register")]
-        public IActionResult Register(USUARIOMODEMN usuario)
+        public async Task<IActionResult> Register(USUARIOMODEMN usuario)
         {
-            if (usuario != null)
+            if (ModelState.IsValid)
             {
-                usuariosService.CrearUsuario(usuario);
-                return Ok("usuario creado");
+                await usuariosService.CrearUsuario(usuario);
+                return RedirectToAction("Index", "Home");
+
             }
-            else
-            {
-                return BadRequest("Usuario no puede ser null");
-            }
+            return View(usuario);
+
+        }
+
+        [HttpGet]
+        [Route("register")]
+        public IActionResult Register()
+        {
+            return View();
 
         }
     }
 
-}   
+}
